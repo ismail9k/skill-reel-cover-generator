@@ -8,13 +8,9 @@ Generate professional, branded Instagram Reel cover images (9:16) from a video s
 - Integrates your photo naturally into a cinematic cover
 - Outputs a 9:16 portrait image ready to publish
 
----
-
 ## Prerequisites
 
 This skill uses **Gemini image generation** to produce the cover. Make sure the [Gemini MCP server](https://github.com/google-gemini/gemini-cli-mcp) is installed and configured before using the skill.
-
----
 
 ## Installation
 
@@ -32,8 +28,6 @@ Verify it was installed:
 npx skills list
 ```
 
----
-
 ### Claude Desktop
 
 Claude Desktop doesn't have a Skills CLI, so install manually:
@@ -50,7 +44,6 @@ Upload the skill zip file downloaded from this repo.
 
 ![Claude Desktop step 2](img/claude-desktop-step-2.png)
 
----
 
 ## Usage
 
@@ -67,8 +60,6 @@ Once installed, trigger the skill by:
 
 **Language-aware:** Arabic scripts get Egyptian-dialect Arabic titles; English scripts get punchy English titles. The skill detects the language automatically.
 
----
-
 ## Visual Themes
 
 | Theme | When to use | Visual style |
@@ -81,32 +72,6 @@ Once installed, trigger the skill by:
 | `opinion-hot-take` | Opinions, controversial takes | Flame/spark aesthetics, bold text, energetic |
 | `weekly-recap` | Weekly AI/tech roundups | Magazine-style layout, multiple visual elements |
 
----
-
-## Example Output Titles
-
-### Arabic
-
-| Script topic | Theme | Title |
-|---|---|---|
-| Claude usage limits | `ai-futuristic` | "Claude بيقولك لا؟ عرفت ليه" |
-| NVIDIA GTC announcement | `breaking-news` | "NVIDIA غيرت قواعد اللعبة" |
-| OpenAI vs Gemini | `vs-comparison` | "مين أحسن؟ الحقيقة اللي محدش بيقولها" |
-| Cybersecurity breach | `cybersecurity` | "اتهكر بدون ما تعرف 🚨" |
-| Weekly AI recap | `weekly-recap` | "أهم أخبار الـAI الأسبوع ده" |
-
-### English
-
-| Script topic | Theme | Title |
-|---|---|---|
-| Claude usage limits | `ai-futuristic` | "Why Claude Said No To Me" |
-| NVIDIA GTC announcement | `breaking-news` | "NVIDIA Just Changed Everything" |
-| OpenAI vs Gemini | `vs-comparison` | "The Truth Nobody Tells You" |
-| Cybersecurity breach | `cybersecurity` | "You Got Hacked and Don't Know It 🚨" |
-| Weekly AI recap | `weekly-recap` | "This Week in AI — Big Moves" |
-
----
-
 ## Customization
 
 The skill is fully editable. Open `SKILL.md` to:
@@ -115,8 +80,6 @@ The skill is fully editable. Open `SKILL.md` to:
 - Add new themes to the theme reference table
 - Adjust the image generation prompt template
 - Modify the quality checklist
-
----
 
 ## License
 
