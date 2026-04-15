@@ -14,9 +14,41 @@ Generate professional, branded Instagram Reel cover images (9:16) from a video s
 
 ## Prerequisites
 
-This skill uses **Gemini image generation** to produce the cover. Make sure the [@houtini/gemini-mcp](https://github.com/houtini/gemini-mcp) server is installed and configured before using the skill.
+### Set up Gemini MCP
+
+The generation phase requires [@houtini/gemini-mcp](https://github.com/houtini/gemini-mcp) to be configured as an MCP server in Claude Code:
+
+```bash
+npm install -g @houtini/gemini-mcp
+```
+
+Then register it in your Claude Code MCP config — either globally in `~/.claude/settings.json` or per-project in `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "gemini": {
+      "command": "npx",
+      "args": ["-y", "@houtini/gemini-mcp"],
+      "env": {
+        "GEMINI_API_KEY": "your-gemini-api-key"
+      }
+    }
+  }
+}
+```
+
+Restart Claude Code after saving so it picks up the new MCP server. See the [@houtini/gemini-mcp docs](https://github.com/houtini/gemini-mcp) for the full configuration reference and supported env vars.
 
 ## Installation
+
+### Using `claude install-skill` (recommended)
+
+If you're on a recent Claude Code version, you can install the skill directly from GitHub:
+
+```bash
+claude install-skill github.com/ismail9k/claude-skill-reel-cover-generator
+```
 
 ### Using Skills CMD
 
