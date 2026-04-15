@@ -3,18 +3,22 @@
 Generate professional, branded Instagram Reel cover images (9:16) from a video script. Designed for Arabic and English tech content creators.
 
 **What it does:**
-- Reads your reel script and extracts a punchy title (Arabic or English)
+- Reads your reel script, detects its language, and summarizes it
+- Suggests **3 title options** (in the script's language) — pick one or write your own
+- Suggests **3 subtitle options** — pick one, write your own, or skip it
 - Picks a matching visual theme (AI, cybersecurity, breaking news, etc.)
-- Integrates your photo naturally into a cinematic cover
-- Outputs a 9:16 portrait image ready to publish
+- Shows you the **final image prompt** for review — copy it into another tool, or let Claude continue
+- If you continue with Claude: asks for your photo, then generates a cinematic 9:16 cover via Gemini
+
+> **Note:** All conversation with you happens in **English**. Only the cover text (title/subtitle) follows the script's language.
 
 ## Prerequisites
 
-This skill uses **Gemini image generation** to produce the cover. Make sure the [Gemini MCP server](https://github.com/google-gemini/gemini-cli-mcp) is installed and configured before using the skill.
+This skill uses **Gemini image generation** to produce the cover. Make sure the [@houtini/gemini-mcp](https://github.com/houtini/gemini-mcp) server is installed and configured before using the skill.
 
 ## Installation
 
-### Skills CLI (Claude Code, Cursor, Windsurf, Gemini CLI, and more)
+### Using Skills CMD
 
 Any agent that supports the Skills CLI can install this skill:
 
@@ -28,21 +32,28 @@ Verify it was installed:
 npx skills list
 ```
 
-### Claude Desktop
+### Manually (no command line)
 
-Claude Desktop doesn't have a Skills CLI, so install manually:
+If you're not comfortable with the terminal, you can install the skill by copying the files into Claude's skills folder:
 
-**Step 1 — Open the skill panel**
+1. **Download the skill**
+   - Go to [https://github.com/ismail9k/skill-reel-cover-generator](https://github.com/ismail9k/skill-reel-cover-generator)
+   - Click the green **Code** button → **Download ZIP**
+   - Unzip the downloaded file — you'll get a folder named `skill-reel-cover-generator`
 
-Go to **Customize → Skills → Create skill → Upload a skill**
+2. **Open the Claude skills folder**
+   - **macOS:** Open Finder, press `Cmd + Shift + G`, paste `~/.claude/skills` and press Enter
+   - **Windows:** Open File Explorer, paste `%USERPROFILE%\.claude\skills` in the address bar and press Enter
+   - If the `skills` folder doesn't exist yet, create it
 
-![Claude Desktop step 1](img/claude-desktop-step-1.png)
+3. **Move the skill into place**
+   - Drag the unzipped `skill-reel-cover-generator` folder into the `skills` folder
+   - The final path should look like: `~/.claude/skills/skill-reel-cover-generator/SKILL.md`
 
-**Step 2 — Upload the skill file**
+4. **Restart Claude**
+   - Close and reopen Claude Code (or your Claude client) so it picks up the new skill
 
-Upload the skill zip file downloaded from this repo.
-
-![Claude Desktop step 2](img/claude-desktop-step-2.png)
+That's it — you can now use the skill by asking for a "reel cover" or running `/reel-cover-generator`.
 
 
 ## Usage
@@ -53,12 +64,14 @@ Once installed, trigger the skill by:
 - Or running `/reel-cover-generator`
 
 **The skill will:**
-1. Analyze your script and extract a title and visual theme
-2. Ask for your photo
-3. Generate the cover via Gemini
-4. Offer refinements if needed
+1. Analyze your script — detect the language, summarize it, suggest a theme
+2. Offer **3 title suggestions** — pick one or provide a custom title
+3. Offer **3 subtitle suggestions** — pick one, provide a custom one, or skip it
+4. Build the final image generation prompt and show it to you for review
+5. Let you choose: **copy the prompt** to use elsewhere, or **continue with Claude**
+6. If continuing: ask for your photo, generate the cover via Gemini, and offer refinements
 
-**Language-aware:** Arabic scripts get Egyptian-dialect Arabic titles; English scripts get punchy English titles. The skill detects the language automatically.
+**Language handling:** The skill talks to you in English. The cover text itself follows the script's language — Arabic scripts get Egyptian-dialect Arabic titles, English scripts get punchy English titles.
 
 ## Visual Themes
 

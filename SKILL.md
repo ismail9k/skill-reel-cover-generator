@@ -7,7 +7,9 @@ description: Generate Instagram Reel cover images (9:16 portrait format) from a 
 
 Generate professional, branded Instagram Reel cover images for tech content. The cover must be 9:16 portrait orientation, visually striking, and match the mood/topic of the provided script.
 
-The skill is **language-aware**: it detects the language of the script (or the user's message) and generates titles, captions, and prompts in that language. Arabic scripts get Egyptian-dialect Arabic titles; English scripts get punchy English titles. Mixed-language scripts default to the dominant language.
+**Language rules — important:**
+- **All communication with the user is in English.** Every question, confirmation, and status update you write to the user must be English, regardless of the script's language.
+- **The generated title/subtitle follow the script's language.** If the script is Arabic, titles are Arabic (Egyptian dialect where natural). If English, titles are English. The *cover text* matches the script; the *conversation* stays in English.
 
 ---
 
@@ -15,14 +17,20 @@ The skill is **language-aware**: it detects the language of the script (or the u
 
 ### Step 1 — Analyze the Script
 
-Read the script carefully and extract:
+Read the provided script carefully and produce:
 
-- **Language:** Detect the language of the script (Arabic or English). This determines the title language and messaging in subsequent steps.
-- **Title:** A punchy 3-8 word title that captures the core message. Keep it short enough to display prominently on a cover.
-  - Arabic scripts: use Egyptian dialect where natural
-  - English scripts: use direct, punchy English (e.g. "The AI Nobody Talks About")
-- **Subtitle (optional):** A short supporting phrase in English or the detected language (e.g., a tool name, a category label like "AI News", "تحذير أمني", "Deep Dive").
-- **Theme/Mood:** Choose ONE from the list below based on the script's topic and tone.
+1. **Detected language** — Arabic, English, or mixed (name the dominant language).
+2. **Summary** — a concise 2–3 sentence summary of what the script is about, its angle, and its tone.
+3. **Theme/Mood** — choose ONE theme key from the reference table below that best matches the topic and mood.
+
+Present this analysis to the user in English as a compact block, e.g.:
+
+> **Script analysis**
+> • Language: Arabic (Egyptian dialect)
+> • Summary: A quick explainer about why Claude hits usage limits and how context windows affect cost. Tone: casual, slightly frustrated.
+> • Suggested theme: `ai-futuristic` — fits the LLM / usage-limit topic
+
+Then move on to Step 2 (titles).
 
 #### Theme Reference
 
@@ -36,16 +44,42 @@ Read the script carefully and extract:
 | `opinion-hot-take` | Opinions, controversial takes, debates | Flame/spark aesthetics, bold text, energetic |
 | `weekly-recap` | Weekly AI/tech roundups | Magazine-style layout, multiple visual elements |
 
-### Step 2 — Request Creator Photo
+### Step 2 — Suggest 3 Titles
 
-After analyzing the script, ask for the user's photo **in the same language they used**:
+Generate **3 distinct title options** based on the script and its detected language. Titles must be in the script's language (Arabic titles for Arabic scripts, English titles for English scripts). Keep each 3–8 words, punchy, and thumbnail-legible.
 
-- **Arabic:** "عشان أعمل الغلاف، محتاج صورتك! ارفع صورة واضحة بوجه بارز — ممكن portrait أو نص جسم. هي هتتدمج في الغلاف بأسلوب احترافي مع الـvisuals المناسبة للموضوع."
-- **English:** "To create the cover I need your photo! Upload a clear shot with a prominent face — portrait or half-body works great. It'll be blended naturally into the scene."
+Present them to the user in English:
 
-Wait for the user to upload their photo before proceeding.
+> **Pick a title** (or type your own):
+> 1. "Claude بيقولك لا؟ عرفت ليه"
+> 2. "ليه Claude بيوقفك فجأة"
+> 3. "حدود Claude اللي محدش بيقولك عليها"
+>
+> Reply with a number to pick one, or send your own title.
 
-### Step 3 — Build the Image Generation Prompt
+Wait for the user's choice. Accept either:
+- A number (1, 2, or 3) → use that suggestion
+- A custom title → use it verbatim
+
+### Step 3 — Suggest 3 Subtitles
+
+Generate **3 subtitle options** aligned with the chosen title and script. Subtitles can be short category labels, tool names, or supporting phrases. They can be in English even when the title is Arabic (mixed is fine and common for tech covers).
+
+Present them to the user in English:
+
+> **Pick a subtitle** (or skip it):
+> 1. "Usage Limits Explained"
+> 2. "Context Window Deep Dive"
+> 3. "AI News"
+>
+> Reply with a number, send your own, or say "skip" to leave the cover without a subtitle.
+
+Wait for the user's choice. Accept:
+- A number (1, 2, or 3)
+- A custom subtitle
+- "skip" / "no subtitle" / "none" → proceed with no subtitle
+
+### Step 4 — Build the Image Generation Prompt
 
 Construct a detailed Gemini image prompt using this template, filling in the dynamic parts:
 
@@ -53,7 +87,7 @@ Construct a detailed Gemini image prompt using this template, filling in the dyn
 Portrait Instagram Reel cover, 9:16 aspect ratio, ultra high quality.
 
 LAYOUT:
-- Top area: [TITLE in Arabic, bold, large font, high contrast against background]
+- Top area: [TITLE in <language>, bold, large font, high contrast against background]
 - [SUBTITLE if any, smaller font, English or Arabic]
 - Bottom half or right side: real photo of a person integrated naturally into the scene
 - Bottom corner: small brand watermark "@ismail9k" in subtle white text
@@ -67,7 +101,7 @@ PHOTO INTEGRATION:
 - The person should look like a tech content creator
 
 TYPOGRAPHY:
-- Title: modern, bold, slightly futuristic font feel — [Arabic: right-aligned / English: left or center aligned]
+- Title: modern, bold, slightly futuristic font feel — [ALIGNMENT]
 - Text must be sharp and legible against background
 - Use white or bright accent color for title text
 - Add subtle glow or shadow to make text pop
@@ -77,29 +111,81 @@ OVERALL FEEL: Professional tech influencer cover. Cinematic. Eye-catching at thu
 Do NOT add watermarks, logos, or text other than what's specified.
 ```
 
-Replace `[TITLE]`, `[SUBTITLE]`, `[VISUAL THEME description]` with actual values for this script.
+Replace `[TITLE]`, `[SUBTITLE]`, `[VISUAL THEME description]`, `<language>`, and `[ALIGNMENT]` with actual values for this script:
 
-### Step 4 — Load Image & Generate with Gemini
+- `<language>` → the language detected in Step 1 (e.g. `Arabic` or `English`).
+- `[ALIGNMENT]` → `right-aligned` for Arabic titles, `left or center aligned` for English titles.
 
-**Important:** The Gemini MCP server cannot access the container filesystem directly. You must use `gemini:load_image_from_path` first to convert any local file into a usable reference.
+If the user skipped the subtitle in Step 3, remove the subtitle line entirely from the LAYOUT section — do not leave a placeholder.
 
-1. **Load the user's photo** using `gemini:load_image_from_path` with the uploaded file path (e.g. `/mnt/user-data/uploads/photo.png`). This returns a `filePath` token and `mimeType`.
-2. **Call `gemini:edit_image`** using the returned `filePath` (not the original filesystem path):
-   - `images`: `[{ "filePath": "<filePath from load_image_from_path>", "mimeType": "<returned mimeType>" }]`
-   - `prompt`: the constructed prompt from Step 3
-   - `outputPath`: `/mnt/user-data/outputs/reel-cover-[topic-slug].png`
+### Step 5 — Present the Final Prompt for Review
 
-**Do NOT** pass raw `/mnt/...` paths directly to `gemini:edit_image` or `gemini:generate_image` — they will fail. Always go through `load_image_from_path` first.
+**Do not generate the image yet.** Show the fully constructed prompt to the user inside a fenced code block so it's easy to copy, and ask how they want to proceed:
 
-### Step 5 — Present & Offer Iteration
+> **Here's the final prompt:**
+>
+> ```
+> <full constructed prompt>
+> ```
+>
+> You can either:
+> 1. **Copy this prompt** and use it with another image generation agent/tool
+> 2. **Continue with me** — I'll generate the cover for you using Gemini
+>
+> Which would you like?
+
+Wait for the user's response.
+- If they choose option 1 (copy / use elsewhere) → acknowledge and stop. Do not call any generation tool.
+- If they choose option 2 (continue with Claude) → proceed to Step 6.
+
+### Step 6 — Request Required Assets
+
+Only enter this step if the user chose to continue with Claude in Step 5.
+
+**Always ask for the photo — every run, no caching, no auto-pickup.** Prompt the user in English:
+
+> Great! Before I generate, I need your photo — a clear shot with a prominent face (portrait or half-body). I'll blend it naturally into the cover. Please upload it or send the full file path.
+
+Wait for the user to provide the photo (direct upload or an explicit absolute file path) before proceeding to Step 7. If they point to a folder instead of a file, ask them to pick one specific image. If they attach an image inline without a resolvable local path, ask them for the absolute path on disk (or to save it locally first) — `gemini:generate_image` needs either a `filePath` or base64 `data` + `mimeType`. Do not proceed until all required assets are in hand.
+
+### Step 7 — Generate with Gemini
+
+**Use `gemini:generate_image`, NOT `gemini:edit_image`.** This is critical:
+
+- `generate_image` supports `aspectRatio: "9:16"` — required for Reels.
+- `edit_image` has **no** `aspectRatio` parameter; its output ratio follows the input photo, which breaks the 9:16 requirement when the user uploads a square or landscape selfie.
+
+The creator's photo goes in as a **reference image** to guide the generation, while the prompt + aspect ratio fully control composition.
+
+#### Call
+
+```
+gemini:generate_image
+  prompt:       <constructed prompt from Step 4>
+  aspectRatio:  "9:16"
+  images:       [{ "filePath": "<real absolute path to the creator's photo>" }]
+  outputPath:   "<real absolute path>/reel-cover-<topic-slug>.png"   # optional
+```
+
+Notes on the `images` parameter:
+- The schema accepts `filePath` directly — the server reads the file itself, bypassing the MCP transport limit. You do **not** need to base64-encode or call `load_image_from_path` first.
+- `mimeType` is auto-detected from `filePath`, so you can omit it.
+- If the photo path is very large or transient, base64 `data` + `mimeType` also works but is subject to MCP transport size limits.
+
+If `outputPath` is omitted the server saves to its configured `GEMINI_IMAGE_OUTPUT_DIR` (or its built-in default) with an auto-generated name — providing an explicit path keeps the file findable.
+
+#### Iteration / refinement turns
+
+When the user asks for tweaks ("make the title red", "different background"), call `generate_image` again with an updated prompt and the **same reference photo**. Do not switch to `edit_image` for refinements — the 9:16 ratio must be preserved.
+
+### Step 8 — Present & Offer Iteration
 
 After generating:
 1. Show the generated image
-2. Display the title and theme you chose
-3. Offer refinements **in the same language as the user**:
+2. Display the final title, subtitle, and theme used
+3. Offer refinements **in English**:
 
-- **Arabic:** "إزيك في الغلاف؟ لو عايز أغير حاجة — اللون، العنوان، التأثير البصري — قولي وأعمله تاني 🎨"
-- **English:** "How's the cover? If you want to tweak anything — colors, title, visual effect — just say the word and I'll regenerate 🎨"
+> How's the cover? If you want to tweak anything — colors, title, visual effect, photo placement — just say the word and I'll regenerate.
 
 ---
 
